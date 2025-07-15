@@ -1,0 +1,461 @@
+{
+	"info": {
+		"_postman_id": "a7a31f35-50f1-49cd-9593-ed43e6b0f618",
+		"name": "PetStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19166842"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"item": [
+				{
+					"name": "create-valid-user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"requierd\" : [",
+									"        \"code\",",
+									"        \"type\",",
+									"        \"message\" ",
+									"    ],",
+									"    \"properties\": {",
+									"        \"code\": {",
+									"            \"type\": \"integer\"},",
+									"         \"type\": {",
+									"            \"type\": \"string\"",
+									"         },",
+									"         \"message\": {",
+									"            \"type\": \"string\"",
+									"         }",
+									"    }",
+									"}",
+									"pm.test(\"expect response has all requierd properties\", function () {",
+									" pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"const requestData = pm.request.body.raw && JSON.parse(pm.request.body.raw);",
+									"",
+									"pm.test(\"Response message should be eql to sent user ID\", function () {",
+									"    pm.expect(jsonData.message).to.eql(String(requestData.id));",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"username\": \"test\",\n  \"firstName\": \"test\",\n  \"lastName\": \"test\",\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"1234567890\",\n  \"userStatus\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/user",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-user-missing-username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"requierd\" : [",
+									"        \"code\",",
+									"        \"type\",",
+									"        \"message\" ",
+									"    ],",
+									"    \"properties\": {",
+									"        \"code\": {",
+									"            \"type\": \"integer\"},",
+									"         \"type\": {",
+									"            \"type\": \"string\"",
+									"         },",
+									"         \"message\": {",
+									"            \"type\": \"string\"",
+									"         }",
+									"    }",
+									"}",
+									"pm.test(\"expect response has all requierd properties\", function () {",
+									" pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 1,\n  \"username\": \"test\",\n  \"firstName\": \"test\",\n  \"lastName\": \"test\",\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\",\n  \"phone\": \"1234567890\",\n  \"userStatus\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/user",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GET Pets",
+			"item": [
+				{
+					"name": "create-pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.environment.set(\"petId\", jsonData.id);",
+									"pm.environment.set(\"petName\", jsonData.name);",
+									"",
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"requierd\":[",
+									"        \"id\",",
+									"        \"category\",",
+									"        \"name\",",
+									"        \"photoUrls\",",
+									"        \"tags\",",
+									"        \"status\"    ",
+									"    ],",
+									"    \"properties\": {",
+									"        \"id\": {",
+									"            \"type\": \"number\"",
+									"        },",
+									"        \"category\": {",
+									"            \"type\": \"object\",",
+									"            \"requierd\":[",
+									"                \"id\",",
+									"                \"name\"    ",
+									"            ],",
+									"            \"properties\": {",
+									"                \"id\": {",
+									"                    \"type\": \"number\"    ",
+									"                },",
+									"                \"name\": {",
+									"                    \"type\": \"string\"    ",
+									"                }    ",
+									"            }",
+									"        },",
+									"        \"name\": {",
+									"            \"type\": \"string\"    ",
+									"        },",
+									"        \"photoUrls\": {",
+									"            \"type\": \"array\",",
+									"            minItems: 1,",
+									"            \"items\": {",
+									"                \"type\": \"string\"",
+									"            } ",
+									"        },",
+									"        \"tags\": {",
+									"            \"type\": \"array\",",
+									"            \"minItems\": 1,",
+									"            \"items\": {",
+									"                \"type\": \"object\",",
+									"                \"required\": [\"id\", \"name\"],",
+									"                \"properties\": {",
+									"                    \"id\": { \"type\": \"integer\" },",
+									"                    \"name\": { \"type\": \"string\" }",
+									"                }",
+									"            }",
+									"        },",
+									"        \"status\": {",
+									"            \"type\": \"string\",",
+									"        }",
+									"    }",
+									"}",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"expect response has all requierd properties\", function () {",
+									" pm.response.to.have.jsonSchema(schema);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 13131313131313,\n  \"category\": {\n    \"id\": 0,\n    \"name\": \"test13\"\n  },\n  \"name\": \"test13\",\n  \"photoUrls\": [\n    \"string\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 0,\n      \"name\": \"string\"\n    }\n  ],\n  \"status\": \"available\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/pet",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "valid-pet-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema = {",
+									"    \"type\": \"object\",",
+									"    \"required\": [",
+									"        \"id\",",
+									"        \"category\",",
+									"        \"name\",",
+									"        \"photoUrls\",",
+									"        \"tags\",",
+									"        \"status\"",
+									"    ],",
+									"    \"properties\": {",
+									"        \"id\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"category\": {",
+									"            \"type\": \"object\",",
+									"            \"required\": [\"id\", \"name\"],",
+									"            \"properties\": {",
+									"                \"id\": { \"type\": \"integer\" },",
+									"                \"name\": { \"type\": \"string\" }",
+									"            }",
+									"        },",
+									"        \"name\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"photoUrls\": {",
+									"            \"type\": \"array\",",
+									"            minItems: 1,",
+									"            \"items\": {",
+									"                \"type\": \"string\"",
+									"            }",
+									"        },",
+									"        \"tags\": {",
+									"            \"type\": \"array\",",
+									"            \"minItems\": 1,",
+									"            \"items\": {",
+									"                \"type\": \"object\",",
+									"                \"required\": [\"id\", \"name\"],",
+									"                \"properties\": {",
+									"                    \"id\": { \"type\": \"integer\" },",
+									"                    \"name\": { \"type\": \"string\" }",
+									"                }",
+									"            }",
+									"        },",
+									"        \"status\": {",
+									"            \"type\": \"string\"",
+									"        }",
+									"    }",
+									"};",
+									"",
+									"",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"expect response has all requierd properties\", function () {",
+									" pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"",
+									"pm.test(\"Response contains pet with ID {{petId}}\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const petId = pm.environment.get(\"petId\");",
+									"",
+									"    pm.expect(jsonData.id).to.eql(Number(petId));",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/pet/{{petId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"pet",
+								"{{petId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid-pet-id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const schema ={",
+									"    \"type\": \"object\",",
+									"    \"requierd\" :[",
+									"        \"code\",",
+									"        \"type\",",
+									"        \"message\"",
+									"    ],",
+									"    \"properties\":{",
+									"        \"code\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"type\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"message\": {",
+									"            \"type\": \"string\"",
+									"        }",
+									"    }",
+									"}",
+									"",
+									"",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Error message is 'Pet not found'\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.message).to.eql(\"Pet not found\");",
+									"});",
+									"",
+									"pm.test(\"expect response has all requierd properties\", function () {",
+									" pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "special-key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/pet/{{invalidPetId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"pet",
+								"{{invalidPetId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "special-key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
